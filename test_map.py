@@ -5,17 +5,97 @@ screen = pygame.display.set_mode(size)
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
-zombie_player = pygame.sprite.Group()
-swat_player = pygame.sprite.Group()
-swat_zombie = pygame.sprite.Group()
 clock = pygame.time.Clock()
+zombie = pygame.sprite.Group()
+player = pygame.sprite.Group()
+zombie_player = pygame.sprite.Group()
+
+
+class Zombielook(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(all_sprites, zombie_player)
+        self.look = False
+        radius = 30
+        self.parent = 0
+        self.player = 0
+        self.track = False
+        self.vx = 0
+        self.vy = 0
+        self.radius = radius
+        self.image = pygame.Surface((2 * radius, 2 * radius),
+                                    pygame.SRCALPHA, 32)
+        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
+
+    def update(self):
+        self.look = self.track or self.look
+        self.track = pygame.sprite.spritecollideany(self, player) and not self.look
+        self.follow()
+        if self.track:
+            self.player = pygame.sprite.spritecollide(self, player, False)[0]
+            coord = pygame.sprite.spritecollide(self, player, False)[0].being_tracked()
+            self.parent = pygame.sprite.spritecollide(self, zombie, False)[0]
+            pygame.sprite.spritecollide(self, zombie, False)[0].being_tracked()
+            pygame.sprite.spritecollide(self, zombie, False)[0].get_coord(coord)
+
+    def follow(self):
+        if self.look:
+            coord = self.player.being_tracked()
+            self.parent.get_coord(coord)
+
+
+class Zombie(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(all_sprites, zombie)
+        radius = 5
+        self.vision = Zombielook(x - 10, y - 10)
+        self.coord = []
+        self.index = "undefined"
+        self.x = x
+        self.y = y
+        self.tracked = False
+        self.vx = 0
+        self.vy = 0
+        self.radius = radius
+        self.image = pygame.Surface((2 * radius, 2 * radius),
+                                    pygame.SRCALPHA, 32)
+        pygame.draw.circle(self.image, pygame.Color("green"),
+                           (radius, radius), radius)
+        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
+
+    def update(self):
+        self.vision.update()
+        if self.tracked:
+            x, y = self.coord[self.index]
+            if self.x != x or self.y != y:
+                self.rect = self.rect.move(x - self.x, y - self.y)
+            else:
+                while self.x == x and self.y == y:
+                    self.index += 1
+                    x, y = self.coord[self.index]
+            self.x = x
+            self.y = y
+
+    def being_tracked(self):
+        self.tracked = True
+
+    def get_coord(self, coord):
+        self.coord = coord
+        if self.index == "undefined":
+            self.index = len(self.coord) - 1
+        else:
+            self.index += 1
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(all_sprites, zombie_player, swat_player)
+        super().__init__(all_sprites, player, zombie_player)
         radius = 5
+        self.x = x
+        self.y = y
         self.vx = 0
         self.vy = 0
+        self.tracked = False
+        self.record = []
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
@@ -23,47 +103,46 @@ class Player(pygame.sprite.Sprite):
                            (radius, radius), radius)
         self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
 
-    def update(self, t):
-        if pygame.key.get_pressed()[pygame.K_w]:
-            self.vy = -1
-            self.vx = 0
-        elif pygame.key.get_pressed()[pygame.K_s]:
-            self.vy = 1
-            self.vx = 0
-        elif pygame.key.get_pressed()[pygame.K_a]:
-            self.vx = -1
-            self.vy = 0
-        elif pygame.key.get_pressed()[pygame.K_d]:
-            self.vx = 1
-            self.vy = 0
-        else:
-            self.vx = 0
-            self.vy = 0
+    def update(self, vx, xy):
+        self.vx = vx
+        self.vy = vy
         if pygame.sprite.spritecollideany(self, horizontal_borders):
             self.vy = 0
-            self.rect = self.rect.move(0, -1)
+            self.rect = self.rect.move(0, -4)
             if pygame.sprite.spritecollideany(self, horizontal_borders):
-                self.rect = self.rect.move(0, 2)
+                self.rect = self.rect.move(0, 8)
+            self.vy = 0
         if pygame.sprite.spritecollideany(self, vertical_borders):
             self.vx = 0
-            self.rect = self.rect.move(-1, 0)
+            self.rect = self.rect.move(-4, 0)
             if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.rect = self.rect.move(2, 0)
+                self.rect = self.rect.move(8, 0)
+            self.vx = 0
+        self.x = self.rect.x
+        self.y = self.rect.y
+        if self.tracked:
+            self.record.append((self.x, self.y))
         self.rect = self.rect.move(self.vx, self.vy)
+
+    def being_tracked(self):
+        self.tracked = True
+        if not self.record:
+            self.record = [(self.x, self.y)]
+        return self.record
 
 
 class Border(pygame.sprite.Sprite):
     # строго вертикальный или строго горизонтальный отрезок
     def __init__(self, x1, y1, x2, y2):
-        super().__init__(all_sprites, zombie_player)
+        super().__init__(all_sprites)
         if x1 == x2:  # вертикальная стенка
             self.add(vertical_borders)
-            self.image = pygame.Surface([3, y2 - y1])
-            self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
+            self.image = pygame.Surface([10, y2 - y1])
+            self.rect = pygame.Rect(x1, y1, 10, y2 - y1)
         else:  # горизонтальная стенка
             self.add(horizontal_borders)
-            self.image = pygame.Surface([x2 - x1, 3])
-            self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
+            self.image = pygame.Surface([x2 - x1, 10])
+            self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
 
 
 Border(25, 25, width - 25, 25)
@@ -75,10 +154,11 @@ Border(250, 150, 250, 300)
 Border(650, 150, 650, 350)
 Border(300, 450, 600, 450)
 Player(100, 100)
+Zombie(200, 300)
 running = True
 t = 0
+zombie_go = True
 while running:
-
     screen.fill((160, 160, 160))
     rect = pygame.Rect(25, 25, width - 50, height - 50)
     pygame.draw.rect(screen, (200, 200, 200), rect)
@@ -89,8 +169,28 @@ while running:
             running = False
 
     t += clock.tick()
-    if t >= 4:
+
+    if t >= 16:
+        if pygame.key.get_pressed()[pygame.K_w]:
+            vy = -4
+            vx = 0
+        elif pygame.key.get_pressed()[pygame.K_s]:
+            vy = 4
+            vx = 0
+        elif pygame.key.get_pressed()[pygame.K_a]:
+            vx = -4
+            vy = 0
+        elif pygame.key.get_pressed()[pygame.K_d]:
+            vx = 4
+            vy = 0
+        else:
+            vx = 0
+            vy = 0
+
+        zombie_go = not zombie_go
         all_sprites.draw(screen)
-        all_sprites.update(t)
+        player.update(vx, vy)
+        if zombie_go:
+            zombie.update()
         pygame.display.flip()
         t = 0
