@@ -11,16 +11,14 @@ player = pygame.sprite.Group()
 zombie_player = pygame.sprite.Group()
 
 
-class Zombielook(pygame.sprite.Sprite):
+class ZombieLook(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(all_sprites, zombie_player)
-        self.look = False
         radius = 30
-        self.parent = 0
-        self.player = 0
+        self.look = False
+        self.parent = None
+        self.player = None
         self.track = False
-        self.vx = 0
-        self.vy = 0
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
@@ -47,7 +45,7 @@ class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(all_sprites, zombie)
         radius = 5
-        self.vision = Zombielook(x - 10, y - 10)
+        self.vision = ZombieLook(x - 10, y - 10)
         self.coord = []
         self.index = "undefined"
         self.x = x
@@ -71,7 +69,11 @@ class Zombie(pygame.sprite.Sprite):
             else:
                 while self.x == x and self.y == y:
                     self.index += 1
-                    x, y = self.coord[self.index]
+                    if not self.index >= len(self.coord):
+                        x, y = self.coord[self.index]
+                    else:
+                        break
+                self.rect = self.rect.move(x - self.x, y - self.y)
             self.x = x
             self.y = y
 
@@ -153,44 +155,52 @@ Border(100, 150, 250, 150)
 Border(250, 150, 250, 300)
 Border(650, 150, 650, 350)
 Border(300, 450, 600, 450)
-Player(100, 100)
+main_character = Player(100, 100)
 Zombie(200, 300)
 running = True
 t = 0
 zombie_go = True
+death_per_tick = []
 while running:
-    screen.fill((160, 160, 160))
-    rect = pygame.Rect(25, 25, width - 50, height - 50)
-    pygame.draw.rect(screen, (200, 200, 200), rect)
-    pygame.draw.rect(screen, (100, 150, 250),
-                     (23, 23, width - 45, height - 45), 5)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    if not all(death_per_tick) or len(death_per_tick) == 0:
+        screen.fill((160, 160, 160))
+        rect = pygame.Rect(25, 25, width - 50, height - 50)
+        pygame.draw.rect(screen, (200, 200, 200), rect)
+        pygame.draw.rect(screen, (100, 150, 250),
+                         (23, 23, width - 45, height - 45), 5)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    t += clock.tick()
+        t += clock.tick()
 
-    if t >= 16:
-        if pygame.key.get_pressed()[pygame.K_w]:
-            vy = -4
-            vx = 0
-        elif pygame.key.get_pressed()[pygame.K_s]:
-            vy = 4
-            vx = 0
-        elif pygame.key.get_pressed()[pygame.K_a]:
-            vx = -4
-            vy = 0
-        elif pygame.key.get_pressed()[pygame.K_d]:
-            vx = 4
-            vy = 0
-        else:
-            vx = 0
-            vy = 0
-
-        zombie_go = not zombie_go
-        all_sprites.draw(screen)
-        player.update(vx, vy)
-        if zombie_go:
-            zombie.update()
+        if t >= 16:
+            if pygame.key.get_pressed()[pygame.K_w]:
+                vy = -4
+                vx = 0
+            elif pygame.key.get_pressed()[pygame.K_s]:
+                vy = 4
+                vx = 0
+            elif pygame.key.get_pressed()[pygame.K_a]:
+                vx = -4
+                vy = 0
+            elif pygame.key.get_pressed()[pygame.K_d]:
+                vx = 4
+                vy = 0
+            else:
+                vx = 0
+                vy = 0
+            death_per_tick.append(pygame.sprite.spritecollideany(main_character, zombie) != None)
+            zombie_go = not zombie_go
+            all_sprites.draw(screen)
+            player.update(vx, vy)
+            if zombie_go:
+                zombie.update()
+            pygame.display.flip()
+            if len(death_per_tick) > 4:
+                death_per_tick = death_per_tick[-5:]
+            print(death_per_tick)
+            t = 0
+    else:
+        screen.fill((0, 0, 0))
         pygame.display.flip()
-        t = 0
