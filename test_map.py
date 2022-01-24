@@ -1,4 +1,5 @@
 import pygame
+
 pygame.init()
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
@@ -177,13 +178,25 @@ while running:
         if t >= 16:
             vx = 0
             vy = 0
-            if pygame.key.get_pressed()[pygame.K_w]:
+            if pygame.key.get_pressed()[pygame.K_w] and pygame.key.get_pressed()[pygame.K_a]:
+                vy = -3
+                vx = -3
+            elif pygame.key.get_pressed()[pygame.K_w] and pygame.key.get_pressed()[pygame.K_d]:
+                vy = -3
+                vx = 3
+            elif pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_a]:
+                vy = 3
+                vx = -3
+            elif pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_d]:
+                vy = 3
+                vx = 3
+            elif pygame.key.get_pressed()[pygame.K_w]:
                 vy = -4
-            if pygame.key.get_pressed()[pygame.K_s]:
+            elif pygame.key.get_pressed()[pygame.K_s]:
                 vy = 4
-            if pygame.key.get_pressed()[pygame.K_a]:
+            elif pygame.key.get_pressed()[pygame.K_a]:
                 vx = -4
-            if pygame.key.get_pressed()[pygame.K_d]:
+            elif pygame.key.get_pressed()[pygame.K_d]:
                 vx = 4
             death_per_tick.append(pygame.sprite.spritecollideany(main_character, zombie) != None)
             zombie_go = not zombie_go
