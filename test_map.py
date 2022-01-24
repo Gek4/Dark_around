@@ -175,21 +175,16 @@ while running:
         t += clock.tick()
 
         if t >= 16:
+            vx = 0
+            vy = 0
             if pygame.key.get_pressed()[pygame.K_w]:
                 vy = -4
-                vx = 0
-            elif pygame.key.get_pressed()[pygame.K_s]:
+            if pygame.key.get_pressed()[pygame.K_s]:
                 vy = 4
-                vx = 0
-            elif pygame.key.get_pressed()[pygame.K_a]:
+            if pygame.key.get_pressed()[pygame.K_a]:
                 vx = -4
-                vy = 0
-            elif pygame.key.get_pressed()[pygame.K_d]:
+            if pygame.key.get_pressed()[pygame.K_d]:
                 vx = 4
-                vy = 0
-            else:
-                vx = 0
-                vy = 0
             death_per_tick.append(pygame.sprite.spritecollideany(main_character, zombie) != None)
             zombie_go = not zombie_go
             all_sprites.draw(screen)
@@ -202,5 +197,5 @@ while running:
             print(death_per_tick)
             t = 0
     else:
-        screen.fill((0, 0, 0))
+        running = False
         pygame.display.flip()
