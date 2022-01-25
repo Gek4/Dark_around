@@ -9,7 +9,43 @@ all_sprites = pygame.sprite.Group()
 clock = pygame.time.Clock()
 zombie = pygame.sprite.Group()
 player = pygame.sprite.Group()
+swat = pygame.sprite.Group()
 zombie_player = pygame.sprite.Group()
+
+
+class Swat(pygame.sprite.Sprite):
+    def __init__(self, x, y, coords):
+        super().__init__(all_sprites, swat)
+        radius = 30
+        self.index = 0
+        self.vx = 0
+        self.vy = 0
+        self.x = x
+        self.y = y
+        self.coords = coords
+        self.radius = radius
+        self.image = pygame.Surface((2 * radius, 2 * radius),
+                                    pygame.SRCALPHA, 32)
+        pygame.draw.circle(self.image, pygame.Color("blue"),
+                           (radius, radius), radius)
+        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
+
+    def update(self):
+        self.vx = self.vy = 0
+        print(self.x, self.y)
+        if self.x == self.coords[(self.index + 1) % len(self.coords)][0] and self.y == self.coords[(self.index + 1) % len(self.coords)][1]:
+            self.index += 1
+        if self.coords[self.index % len(self.coords)][0] > self.coords[(self.index + 1) % len(self.coords)][0]:
+            self.vx = -1
+        elif self.coords[self.index % len(self.coords)][0] < self.coords[(self.index + 1) % len(self.coords)][0]:
+            self.vx = 1
+        elif self.coords[self.index % len(self.coords)][1] < self.coords[(self.index + 1) % len(self.coords)][1]:
+            self.vy = 1
+        else:
+            self.vy = -1
+        self.x += self.vx
+        self.y += self.vy
+        self.rect = self.rect.move(self.vx, self.vy)
 
 
 class ZombieLook(pygame.sprite.Sprite):
@@ -23,6 +59,7 @@ class ZombieLook(pygame.sprite.Sprite):
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
+
         self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
 
     def update(self):
@@ -158,6 +195,7 @@ Border(650, 150, 650, 350)
 Border(300, 450, 600, 450)
 main_character = Player(100, 100)
 Zombie(200, 300)
+Swat(300, 100, [(300, 100), (400, 100), (400, 300), (300, 100)])
 running = True
 t = 0
 zombie_go = True
@@ -201,13 +239,13 @@ while running:
             death_per_tick.append(pygame.sprite.spritecollideany(main_character, zombie) != None)
             zombie_go = not zombie_go
             all_sprites.draw(screen)
+            swat.update()
             player.update(vx, vy)
             if zombie_go:
                 zombie.update()
             pygame.display.flip()
-            if len(death_per_tick) > 4:
-                death_per_tick = death_per_tick[-5:]
-            print(death_per_tick)
+            if len(death_per_tick) > 6:
+                death_per_tick = death_per_tick[-7:]
             t = 0
     else:
         running = False
