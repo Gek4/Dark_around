@@ -45,9 +45,9 @@ while running:
                 vx = -4
             elif pygame.key.get_pressed()[pygame.K_d]:
                 vx = 4
-            death_per_tick.append(pygame.sprite.spritecollideany(main_character, zombie) != None)
+            death_per_tick.append(pygame.sprite.spritecollideany(player, zombie._get_group) != None)
             zombie_go = not zombie_go
-            all_sprites.draw(screen)
+            border.all_sprites.draw(screen)
             player.update(vx, vy)
             if zombie_go:
                 zombie.update()
