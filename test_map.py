@@ -4,7 +4,7 @@ from const import *
 
 pygame.init()
 
-border, player, zombie = first_level.start()  # border, player, zombie
+border, player, zombie_list = first_level.start()  # border, player, zombie
 running = True
 t = 0
 zombie_go = True
@@ -45,12 +45,16 @@ while running:
                 vx = -4
             elif pygame.key.get_pressed()[pygame.K_d]:
                 vx = 4
-            death_per_tick.append(pygame.sprite.spritecollideany(player, zombie._get_group) != None)
+            death_z = False
+            for zombie in zombie_list:
+                death_z = death_z or pygame.sprite.spritecollideany(player, zombie._get_group) is not None
+            death_per_tick.append(death_z)
             zombie_go = not zombie_go
             border.all_sprites.draw(screen)
             player.update(vx, vy)
             if zombie_go:
-                zombie.update()
+                for zombie in zombie_list:
+                    zombie.update()
             pygame.display.flip()
             if len(death_per_tick) > 4:
                 death_per_tick = death_per_tick[-5:]
