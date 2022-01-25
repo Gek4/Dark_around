@@ -1,4 +1,3 @@
-import pygame
 from const import width, height
 from models import Border_constructor, Zombie, Player
 
@@ -18,4 +17,6 @@ def start():
     border = Border_constructor(data)
     player = Player(border, 100, 100)
     zombie = Zombie(border.all_sprites, player, 200, 300)
-    return border, player, zombie
+    zombie2 = Zombie(border.all_sprites, player, 300, 400)
+    zombie_list = [zombie, zombie2]
+    return border, player, zombie_list

@@ -4,7 +4,7 @@ from const import *
 
 pygame.init()
 
-border, player, zombie = first_level.start()  # border, player, zombie
+border, player, zombie_list = first_level.start()  # border, player, zombie
 running = True
 t = 0
 zombie_go = True
@@ -50,7 +50,8 @@ while running:
             all_sprites.draw(screen)
             player.update(vx, vy)
             if zombie_go:
-                zombie.update()
+                for zombie in zombie_list:
+                    zombie.update()
             pygame.display.flip()
             if len(death_per_tick) > 4:
                 death_per_tick = death_per_tick[-5:]
