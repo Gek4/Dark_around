@@ -11,11 +11,11 @@ zombie_go = True
 death_per_tick = []
 while running:
     if not all(death_per_tick) or len(death_per_tick) == 0:
-        screen.fill((160, 160, 160))
-        rect = pygame.Rect(25, 25, width - 50, height - 50)
-        pygame.draw.rect(screen, (200, 200, 200), rect)
-        pygame.draw.rect(screen, (100, 150, 250),
-                         (23, 23, width - 45, height - 45), 5)
+        screen.fill((41, 41, 41))
+        pygame.draw.rect(screen, (0, 0, 0), (210, 20, 1170, 310))
+        pygame.draw.rect(screen, (0, 0, 0), (20, 580, 1360, 300))
+        # pygame.draw.rect(screen, (100, 150, 250),
+        #                  (23, 23, width - 45, height - 45), 5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -56,9 +56,8 @@ while running:
                 for zombie in zombie_list:
                     zombie.update()
             pygame.display.flip()
-            if len(death_per_tick) > 4:
-                death_per_tick = death_per_tick[-5:]
-            print(death_per_tick)
+            if len(death_per_tick) > 6:
+                death_per_tick = death_per_tick[-7:]
             t = 0
     else:
         running = False
