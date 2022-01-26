@@ -97,6 +97,60 @@ class Zombie(pygame.sprite.Sprite):
     def get_cords(self):
         return self.x, self.y
 
+class Swat(pygame.sprite.Sprite):
+    def __init__(self, all_sprites, player, x, y, coords):
+        super().__init__(all_sprites, pygame.sprite.Group())
+        radius = 5
+        #self.vision = SwatLook(all_sprites, self, player, x - 10, y - 10)
+        self.coords = coords
+        self.index = 0
+        self.x = x
+        self.y = y
+        self.vx = 0
+        self.vy = 0
+        self.radius = radius
+        self.image = pygame.Surface((2 * radius, 2 * radius),
+                                    pygame.SRCALPHA, 32)
+        pygame.draw.circle(self.image, pygame.Color("blue"),
+                           (radius, radius), radius)
+        self.rect = pygame.Rect(x, y, 35, 65)
+
+    def update(self):
+        #self.vision.update()
+        self.vx = self.vy = 0
+        print(self.x, self.y)
+        if self.x == self.coords[(self.index + 1) % len(self.coords)][0] and self.y == \
+                self.coords[(self.index + 1) % len(self.coords)][1]:
+            self.index += 1
+        if self.coords[self.index % len(self.coords)][0] > self.coords[(self.index + 1) % len(self.coords)][0]:
+            self.vx = -1
+        elif self.coords[self.index % len(self.coords)][0] < self.coords[(self.index + 1) % len(self.coords)][0]:
+            self.vx = 1
+        elif self.coords[self.index % len(self.coords)][1] < self.coords[(self.index + 1) % len(self.coords)][1]:
+            self.vy = 1
+        else:
+            self.vy = -1
+        self.x += self.vx
+        self.y += self.vy
+        self.rect = self.rect.move(self.vx, self.vy)
+
+    def being_tracked(self):
+        self.tracked = True
+
+    def get_coord(self, coord):
+        self.coord = coord
+        if self.index == "undefined":
+            self.index = len(self.coord) - 1
+        else:
+            self.index += 1
+
+    @property
+    def get_group(self):
+        return self.groups()[1]
+
+    @property
+    def get_cords(self):
+        return self.x, self.y
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, border, x, y):
@@ -208,7 +262,7 @@ def graphics_character():
 
 
 def graphics_zombie():
-    _sprite_sheet = pygame.image.load('../Dark_around/data/zombus.png')
+    _sprite_sheet = pygame.image.load('data/zombus.png')
     image_zombie = _sprite_sheet.subsurface([13, 4, 22, 43])
     image_zombie = pygame.transform.scale(image_zombie, (35, 65))
     image_zombie.set_colorkey([255, 255, 255])

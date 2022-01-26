@@ -9,7 +9,7 @@ def start_game():
     pygame.init()
 
     # load level information
-    border, player, zombie_list = first_level.start()  # border, player, zombie
+    border, player, zombie_list, swat = first_level.start()  # border, player, zombie
     last_pic = const.last_picture
     _image_character_front, _image_character_back, \
     _image_character_left, _image_character_right = models.graphics_character()
@@ -88,6 +88,7 @@ def start_game():
                 zombie_go = not zombie_go
                 border.all_sprites.draw(const.screen)
                 player.update(vx, vy)
+                swat.update()
                 if zombie_go:
                     for zombie in zombie_list:
                         zombie.update()
