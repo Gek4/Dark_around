@@ -6,7 +6,8 @@ __all__ = (
     'Player',
     'Border_constructor',
     'Border',
-    'graphics'
+    'graphics_character',
+    'graphics_zombie'
 )
 
 
@@ -191,10 +192,19 @@ class Border(pygame.sprite.Sprite):
 
 def graphics_character():
     _sprite_sheet = pygame.image.load('../Dark_around/data/1_1.png')
-    image_player = _sprite_sheet.subsurface([12, 3, 23, 43])
-    image_player = pygame.transform.scale(image_player, (35, 65))
-    image_player.set_colorkey([255, 255, 255])
-    return image_player
+    image_player_front = _sprite_sheet.subsurface([12, 4, 22, 42])
+    image_player_front = pygame.transform.scale(image_player_front, (35, 65))
+    image_player_front.set_colorkey([255, 255, 255])
+    image_player_back = _sprite_sheet.subsurface([67, 4, 22, 42])
+    image_player_back = pygame.transform.scale(image_player_back, (35, 65))
+    image_player_back.set_colorkey([255, 255, 255])
+    image_player_left = _sprite_sheet.subsurface([44, 5, 12, 41])
+    image_player_left = pygame.transform.scale(image_player_left, (25, 62))
+    image_player_left.set_colorkey([255, 255, 255])
+    image_player_right = _sprite_sheet.subsurface([97, 5, 15, 41])
+    image_player_right = pygame.transform.scale(image_player_right, (25, 62))
+    image_player_right.set_colorkey([255, 255, 255])
+    return image_player_front, image_player_back, image_player_left, image_player_right
 
 
 def graphics_zombie():
