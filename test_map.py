@@ -1,7 +1,7 @@
 import pygame
 import first_level
 from const import *
-from models import graphics, Player
+from models import graphics_character, graphics_zombie
 
 pygame.init()
 
@@ -10,7 +10,8 @@ running = True
 t = 0
 zombie_go = True
 death_per_tick = []
-_image_character = graphics()
+_image_character = graphics_character()
+_image_zombie = graphics_zombie()
 while running:
     if not all(death_per_tick) or len(death_per_tick) == 0:
         screen.blit(background, (0, 0))
@@ -51,6 +52,7 @@ while running:
                 vx = 4
             death_z = False
             for zombie in zombie_list:
+                screen.blit(_image_zombie, zombie.get_cords)
                 death_z = death_z or pygame.sprite.spritecollideany(player, zombie.get_group) is not None
             death_per_tick.append(death_z)
             zombie_go = not zombie_go
@@ -60,8 +62,8 @@ while running:
                 for zombie in zombie_list:
                     zombie.update()
             pygame.display.flip()
-            if len(death_per_tick) > 6:
-                death_per_tick = death_per_tick[-7:]
+            if len(death_per_tick) > 21:
+                death_per_tick = death_per_tick[-22:]
             t = 0
     else:
         running = False

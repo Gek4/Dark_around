@@ -59,7 +59,7 @@ class Zombie(pygame.sprite.Sprite):
                                     pygame.SRCALPHA, 32)
         pygame.draw.circle(self.image, pygame.Color("green"),
                            (radius, radius), radius)
-        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
+        self.rect = pygame.Rect(x, y, 35, 65)
 
     def update(self):
         self.vision.update()
@@ -91,6 +91,10 @@ class Zombie(pygame.sprite.Sprite):
     @property
     def get_group(self):
         return self.groups()[1]
+
+    @property
+    def get_cords(self):
+        return self.x, self.y
 
 
 class Player(pygame.sprite.Sprite):
@@ -185,9 +189,17 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
 
 
-def graphics():
+def graphics_character():
     _sprite_sheet = pygame.image.load('../Dark_around/data/1_1.png')
     image_player = _sprite_sheet.subsurface([12, 3, 23, 43])
     image_player = pygame.transform.scale(image_player, (35, 65))
     image_player.set_colorkey([255, 255, 255])
     return image_player
+
+
+def graphics_zombie():
+    _sprite_sheet = pygame.image.load('../Dark_around/data/zombus.png')
+    image_zombie = _sprite_sheet.subsurface([13, 4, 22, 43])
+    image_zombie = pygame.transform.scale(image_zombie, (35, 65))
+    image_zombie.set_colorkey([255, 255, 255])
+    return image_zombie
