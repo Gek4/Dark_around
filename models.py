@@ -5,7 +5,8 @@ __all__ = (
     'Zombie',
     'Player',
     'Border_constructor',
-    'Border'
+    'Border',
+    'graphics'
 )
 
 
@@ -24,7 +25,7 @@ class ZombieLook(pygame.sprite.Sprite):
 
     def update(self):
         self.look = self.track or self.look
-        self.track = pygame.sprite.spritecollideany(self, self.player._get_group) and not self.look
+        self.track = pygame.sprite.spritecollideany(self, self.player.get_group) and not self.look
         self.follow()
         if self.track:
             coord = self.player.being_tracked()
@@ -88,7 +89,7 @@ class Zombie(pygame.sprite.Sprite):
             self.index += 1
 
     @property
-    def _get_group(self):
+    def get_group(self):
         return self.groups()[1]
 
 
@@ -108,7 +109,7 @@ class Player(pygame.sprite.Sprite):
                                     pygame.SRCALPHA, 32)
         pygame.draw.circle(self.image, pygame.Color("red"),
                            (radius, radius), radius)
-        self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
+        self.rect = pygame.Rect(x, y, 35, 65)
 
     def update(self, vx, vy):
         self.vx = vx
@@ -138,8 +139,12 @@ class Player(pygame.sprite.Sprite):
         return self.record
 
     @property
-    def _get_group(self):
+    def get_group(self):
         return self.groups()[1]
+
+    @property
+    def get_cords(self):
+        return self.x, self.y
 
 
 class Border_constructor(pygame.sprite.Sprite):
@@ -178,3 +183,11 @@ class Border(pygame.sprite.Sprite):
             self.add(parent.horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 10])
             self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
+
+
+def graphics():
+    _sprite_sheet = pygame.image.load('../Dark_around/data/1_1.png')
+    image_player = _sprite_sheet.subsurface([12, 3, 23, 43])
+    image_player = pygame.transform.scale(image_player, (35, 65))
+    image_player.set_colorkey([255, 255, 255])
+    return image_player

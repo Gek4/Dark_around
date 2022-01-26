@@ -1,6 +1,7 @@
 import pygame
 import first_level
 from const import *
+from models import graphics, Player
 
 pygame.init()
 
@@ -9,11 +10,14 @@ running = True
 t = 0
 zombie_go = True
 death_per_tick = []
+_image_character = graphics()
 while running:
     if not all(death_per_tick) or len(death_per_tick) == 0:
-        screen.fill((41, 41, 41))
-        pygame.draw.rect(screen, (0, 0, 0), (210, 20, 1170, 310))
-        pygame.draw.rect(screen, (0, 0, 0), (20, 580, 1360, 300))
+        screen.blit(background, (0, 0))
+        screen.blit(_image_character, player.get_cords)
+        # pygame.draw.rect(screen, (41, 41, 41), (20, 20, 1560, 860))
+        # pygame.draw.rect(screen, (0, 0, 0), (210, 20, 1170, 310))
+        # pygame.draw.rect(screen, (0, 0, 0), (20, 580, 1360, 300))
         # pygame.draw.rect(screen, (100, 150, 250),
         #                  (23, 23, width - 45, height - 45), 5)
         for event in pygame.event.get():
@@ -47,7 +51,7 @@ while running:
                 vx = 4
             death_z = False
             for zombie in zombie_list:
-                death_z = death_z or pygame.sprite.spritecollideany(player, zombie._get_group) is not None
+                death_z = death_z or pygame.sprite.spritecollideany(player, zombie.get_group) is not None
             death_per_tick.append(death_z)
             zombie_go = not zombie_go
             border.all_sprites.draw(screen)

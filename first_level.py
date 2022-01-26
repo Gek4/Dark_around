@@ -24,7 +24,7 @@ def start():
 
     ]
     border = Border_constructor(data)
-    player = Player(border, 1520, 820)
+    player = Player(border, 1460, 760)
     zombie_list = []
     for i in range(len(coord_to_zombie)):
         zombie_list.append(Zombie(border.all_sprites, player, coord_to_zombie[i][0], coord_to_zombie[i][1]))
