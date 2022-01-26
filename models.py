@@ -97,13 +97,20 @@ class Zombie(pygame.sprite.Sprite):
     def get_cords(self):
         return self.x, self.y
 
+
 class Swat(pygame.sprite.Sprite):
     def __init__(self, all_sprites, player, x, y, coords):
         super().__init__(all_sprites, pygame.sprite.Group())
         radius = 5
-        #self.vision = SwatLook(all_sprites, self, player, x - 10, y - 10)
+        self.w = 50
+        self.h = 50
+        self.l = 200
+        #переменные сверху отвечают за длину и ширину бойца
+        self.vision = SwatLook(all_sprites, self, player)
         self.coords = coords
         self.index = 0
+        self.rotate = 2
+        self.death = True
         self.x = x
         self.y = y
         self.vx = 0
@@ -113,44 +120,88 @@ class Swat(pygame.sprite.Sprite):
                                     pygame.SRCALPHA, 32)
         pygame.draw.circle(self.image, pygame.Color("blue"),
                            (radius, radius), radius)
-        self.rect = pygame.Rect(x, y, 35, 65)
+        self.rect = pygame.Rect(x, y, 50, 50)
 
     def update(self):
-        #self.vision.update()
+        self.death = self.vision.update()
         self.vx = self.vy = 0
-        print(self.x, self.y)
         if self.x == self.coords[(self.index + 1) % len(self.coords)][0] and self.y == \
                 self.coords[(self.index + 1) % len(self.coords)][1]:
             self.index += 1
         if self.coords[self.index % len(self.coords)][0] > self.coords[(self.index + 1) % len(self.coords)][0]:
             self.vx = -1
+            self.rotate = 3
         elif self.coords[self.index % len(self.coords)][0] < self.coords[(self.index + 1) % len(self.coords)][0]:
             self.vx = 1
+            self.rotate = 1
         elif self.coords[self.index % len(self.coords)][1] < self.coords[(self.index + 1) % len(self.coords)][1]:
             self.vy = 1
+            self.rotate = 0
         else:
             self.vy = -1
+            self.rotate = 2
         self.x += self.vx
         self.y += self.vy
         self.rect = self.rect.move(self.vx, self.vy)
-
-    def being_tracked(self):
-        self.tracked = True
-
-    def get_coord(self, coord):
-        self.coord = coord
-        if self.index == "undefined":
-            self.index = len(self.coord) - 1
-        else:
-            self.index += 1
 
     @property
     def get_group(self):
         return self.groups()[1]
 
     @property
+    def get_rotate(self):
+        return self.rotate
+
+    @property
+    def alive(self):
+        return self.death
+
+    @property
+    def get_size(self):
+        return self.w, self.h, self.l
+
+    @property
     def get_cords(self):
         return self.x, self.y
+
+
+class SwatLook(pygame.sprite.Sprite):
+    def __init__(self, all_sprites, parent, player):
+        super().__init__()
+        self.parent = parent
+        self.player = player
+
+    def update(self):
+        x1, y1 = self.parent.get_cords
+        x2, y2 = self.player.get_cords
+        w, h, l = self.parent.get_size
+        if self.parent.get_rotate == 2:
+            self.rect = pygame.Rect(x1, y1, w, l)
+            if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1:
+                return False
+
+        elif self.parent.get_rotate == 0:
+            self.rect = pygame.Rect(x1, y1 + l, w, l)
+            if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l:
+                return False
+
+        elif self.parent.get_rotate == 1:
+            self.rect = pygame.Rect(x1, y1, l, h)
+            if x1 <= x2 <= x1 + l and y1 <= y2 <= y1 + h:
+                return False
+
+        else:
+            self.rect = pygame.Rect(x1 - l, y1, l, h)
+            if x1 - l <= x2 <= x1 and y1 <= y2 <= y1 + h:
+                return False
+        return True
+
+
+
+    @property
+    def _get_group(self):
+        return self.groups()[1]
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, border, x, y):
@@ -238,10 +289,19 @@ class Border(pygame.sprite.Sprite):
             self.add(parent.vertical_borders)
             self.image = pygame.Surface([10, y2 - y1])
             self.rect = pygame.Rect(x1, y1, 10, y2 - y1)
+            self.x = x1
         else:
             self.add(parent.horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 10])
             self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
+            self.y = y1
+    @property
+    def get_cords_h(self):
+        return self.x
+
+    @property
+    def get_cords_w(self):
+        return self.y
 
 
 def graphics_character():

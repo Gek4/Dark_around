@@ -23,10 +23,11 @@ def start_game():
 
     running = True
     t = 0
+    time = 0
     zombie_go = True
     death_per_tick = []
     while running:
-        if not all(death_per_tick) or len(death_per_tick) == 0:
+        if (not all(death_per_tick) or len(death_per_tick) == 0) and swat.alive:
             const.screen.blit(const.background, (0, 0))
             # screen.blit(_image_character, player.get_cords)
             # pygame.draw.rect(screen, (41, 41, 41), (20, 20, 1560, 860))
@@ -40,6 +41,7 @@ def start_game():
 
             t += const.clock.tick()
             if t >= 16:
+                time += 1
                 vx = 0
                 vy = 0
                 if pygame.key.get_pressed()[pygame.K_w] and pygame.key.get_pressed()[pygame.K_a]:
@@ -96,6 +98,7 @@ def start_game():
                 if len(death_per_tick) > 21:
                     death_per_tick = death_per_tick[-22:]
                 t = 0
+
         else:
             running = False
             pygame.display.flip()
