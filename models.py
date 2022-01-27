@@ -100,13 +100,13 @@ class Zombie(pygame.sprite.Sprite):
 
 
 class Swat(pygame.sprite.Sprite):
-    def __init__(self, h_borders, v_borders,  all_sprites, player, x, y, coords):
+    def __init__(self, h_borders, v_borders, all_sprites, player, x, y, coords):
         super().__init__(all_sprites, pygame.sprite.Group())
         radius = 5
         self.w = 50
         self.h = 50
         self.l = 200
-        #переменные сверху отвечают за длину и ширину бойца
+        # переменные сверху отвечают за длину и ширину бойца
         self.vision = SwatLook(h_borders, v_borders, self, player)
         self.coords = coords
         self.index = 0
@@ -186,19 +186,22 @@ class SwatLook(pygame.sprite.Sprite):
         if self.parent.get_rotate == 0:
             self.rect = pygame.Rect(x1, y1, w, l)
 
-            if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) == -1:
+            if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and pygame.Rect.collidelist(self.rect, [i.rect for i in
+                                                                                                 self.h_borders]) == -1:
                 return False
             if pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
-                if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and y2 < self.h_borders[pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
+                if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and y2 < self.h_borders[
+                    pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
                     return False
         elif self.parent.get_rotate == 2:
             self.rect = pygame.Rect(x1, y1 - l, w, l)
             print(pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]))
-            if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) == -1:
+            if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and pygame.Rect.collidelist(self.rect, [i.rect for i in
+                                                                                                 self.h_borders]) == -1:
                 return False
             if pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
                 if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and y2 < self.h_borders[
-                pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
+                    pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
                     return False
 
         elif self.parent.get_rotate == 1:
@@ -211,8 +214,6 @@ class SwatLook(pygame.sprite.Sprite):
             if x1 - l <= x2 <= x1 and y1 <= y2 <= y1 + h:
                 return False
         return True
-
-
 
     @property
     def _get_group(self):
@@ -311,6 +312,7 @@ class Border(pygame.sprite.Sprite):
             self.image = pygame.Surface([x2 - x1, 10])
             self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
             self.y = y1
+
     @property
     def get_cords_h(self):
         return self.y
