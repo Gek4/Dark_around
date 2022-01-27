@@ -323,6 +323,7 @@ def graphics_zombie():
     image_zombie.set_colorkey([255, 255, 255])
     return image_zombie
 
+
 def graphics_swat():
     _sprite_sheet = pygame.image.load('data/not_our_swat.png')
     image_swat = _sprite_sheet.subsurface([0, 0, 53, 86])
