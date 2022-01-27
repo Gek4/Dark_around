@@ -8,6 +8,7 @@ __all__ = (
     'Border_constructor',
     'Border',
     'graphics_zombie',
+    'graphics_swat',
     '_timer'
 )
 
@@ -103,8 +104,8 @@ class Swat(pygame.sprite.Sprite):
     def __init__(self, h_borders, v_borders, all_sprites, player, x, y, coords):
         super().__init__(all_sprites, pygame.sprite.Group())
         radius = 5
-        self.w = 50
-        self.h = 50
+        self.w = 45
+        self.h = 75
         self.l = 200
         # переменные сверху отвечают за длину и ширину бойца
         self.vision = SwatLook(h_borders, v_borders, self, player)
@@ -327,6 +328,13 @@ def graphics_zombie():
     image_zombie = pygame.transform.scale(image_zombie, (35, 65))
     image_zombie.set_colorkey([255, 255, 255])
     return image_zombie
+
+def graphics_swat():
+    _sprite_sheet = pygame.image.load('data/not_our_swat.png')
+    image_swat = _sprite_sheet.subsurface([0, 0, 53, 86])
+    image_swat = pygame.transform.scale(image_swat, (45, 75))
+    image_swat.set_colorkey([255, 255, 255])
+    return image_swat
 
 
 def _timer(timer_seconds):
