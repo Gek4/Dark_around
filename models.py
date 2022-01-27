@@ -182,26 +182,21 @@ class SwatLook(pygame.sprite.Sprite):
         x1, y1 = self.parent.get_cords
         x2, y2 = self.player.get_cords
         w, h, l = self.parent.get_size
-
         if self.parent.get_rotate == 0:
             self.rect = pygame.Rect(x1, y1, w, l)
 
             if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and pygame.Rect.collidelist(self.rect, [i.rect for i in
                                                                                                  self.h_borders]) == -1:
                 return False
-            if pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
-                if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and y2 < self.h_borders[
-                    pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
+            elif pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
+                if x1 <= x2 <= x1 + w and y1 <= y2 <= y1 + l and y2 < self.h_borders[pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
                     return False
         elif self.parent.get_rotate == 2:
             self.rect = pygame.Rect(x1, y1 - l, w, l)
-            print(pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]))
-            if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and pygame.Rect.collidelist(self.rect, [i.rect for i in
-                                                                                                 self.h_borders]) == -1:
+            if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) == -1:
                 return False
-            if pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
-                if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and y2 < self.h_borders[
-                    pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
+            elif pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders]) != -1:
+                if x1 <= x2 <= x1 + w and y1 - l <= y2 <= y1 and y2 < self.h_borders[pygame.Rect.collidelist(self.rect, [i.rect for i in self.h_borders])].get_cords_h:
                     return False
 
         elif self.parent.get_rotate == 1:

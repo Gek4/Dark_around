@@ -139,7 +139,6 @@ zombie_walk_right = [
     pygame.image.load('data/zombus/walk_right/walk_right6.png'),
     pygame.image.load('data/zombus/walk_right/walk_right7.png')
 ]
-
 zombie_walk = [zombie_walk_front, zombie_walk_back, zombie_walk_left, zombie_walk_right]
 zombie_walk_new = [[], [], [], []]
 for i in range(4):
