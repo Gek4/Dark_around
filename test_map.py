@@ -1,5 +1,4 @@
 import pygame
-
 animation_count = 0
 animation_shot_count = 0
 time = 0
@@ -20,6 +19,7 @@ def start_game(num):
     # load level information
     border, player, zombie_list, swat = level.start()  # border, player, zombie, swat
     _image_zombie = models.graphics_zombie()
+    _image_swat = models.graphics_swat()
 
     running = True
     t = 0
@@ -118,8 +118,8 @@ def start_game(num):
                 player.update(vx, vy)
                 models._timer(time)
                 for i in swat:
+                    const.screen.blit(_image_swat, i.get_cords)
                     i.update()
-                    pygame.draw.rect(const.screen, (0, 0, 0), i.get_vision.rect)
                 if zombie_go:
                     for zombie in zombie_list:
                         zombie.update()
