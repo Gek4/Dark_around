@@ -1,4 +1,5 @@
 import pygame
+from const import screen
 
 __all__ = (
     'ZombieLook',
@@ -6,8 +7,8 @@ __all__ = (
     'Player',
     'Border_constructor',
     'Border',
-    'graphics_character',
-    'graphics_zombie'
+    'graphics_zombie',
+    '_timer'
 )
 
 
@@ -190,26 +191,25 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 10)
 
 
-def graphics_character():
-    _sprite_sheet = pygame.image.load('data/character.png')
-    image_player_front = _sprite_sheet.subsurface([12, 4, 22, 42])
-    image_player_front = pygame.transform.scale(image_player_front, (35, 65))
-    image_player_front.set_colorkey([255, 255, 255])
-    image_player_back = _sprite_sheet.subsurface([67, 4, 22, 42])
-    image_player_back = pygame.transform.scale(image_player_back, (35, 65))
-    image_player_back.set_colorkey([255, 255, 255])
-    image_player_left = _sprite_sheet.subsurface([44, 5, 14, 41])
-    image_player_left = pygame.transform.scale(image_player_left, (28, 62))
-    image_player_left.set_colorkey([255, 255, 255])
-    image_player_right = _sprite_sheet.subsurface([97, 5, 15, 41])
-    image_player_right = pygame.transform.scale(image_player_right, (32, 62))
-    image_player_right.set_colorkey([255, 255, 255])
-    return image_player_front, image_player_back, image_player_left, image_player_right
-
-
 def graphics_zombie():
     _sprite_sheet = pygame.image.load('../Dark_around/data/zombus.png')
     image_zombie = _sprite_sheet.subsurface([13, 4, 22, 43])
     image_zombie = pygame.transform.scale(image_zombie, (35, 65))
     image_zombie.set_colorkey([255, 255, 255])
     return image_zombie
+
+
+def _timer(timer_seconds):
+    pygame.font.init()
+    myfont = pygame.font.SysFont("Comic Sans MS", 30)
+    timer_seconds /= 62.5
+    timer_seconds = int(timer_seconds)
+    if timer_seconds < 60:
+        label = myfont.render(f"Time : {timer_seconds}", True, (255, 0, 0))
+    else:
+        minutes = timer_seconds // 60
+        minutes = int(minutes)
+        timer_seconds -= minutes * 60
+        timer_seconds = int(timer_seconds)
+        label = myfont.render(f"Time : {minutes}:{timer_seconds}", True, (255, 0, 0))
+    screen.blit(label, (10, 10))

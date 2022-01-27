@@ -1,30 +1,39 @@
 import pygame
 
+animation_count = 0
+animation_shot_count = 0
+time = 0
+
 
 def start_game():
     import first_level
     import const
     import models
-
+    global time
     pygame.init()
 
+    # for i in range(2):
     # load level information
     border, player, zombie_list = first_level.start()  # border, player, zombie
-    last_pic = const.last_picture
-    _image_character_front, _image_character_back, \
-    _image_character_left, _image_character_right = models.graphics_character()
     _image_zombie = models.graphics_zombie()
-    _images_character = [
-        _image_character_front,
-        _image_character_back,
-        _image_character_left,
-        _image_character_right
-    ]
 
     running = True
     t = 0
     zombie_go = True
     death_per_tick = []
+    walking = False
+
+    def choose_number_of_picture(walking=False):
+        global animation_count, animation_shot_count
+        animation_shot_count += 1
+        if animation_shot_count % 5 == 0:
+            animation_count = animation_count % 8
+            if walking:
+                animation_count += 1
+            else:
+                animation_count = 0
+        return animation_count
+
     while running:
         if not all(death_per_tick) or len(death_per_tick) == 0:
             const.screen.blit(const.background, (0, 0))
@@ -40,46 +49,56 @@ def start_game():
 
             t += const.clock.tick()
             if t >= 16:
+                time += 1
                 vx = 0
                 vy = 0
                 if pygame.key.get_pressed()[pygame.K_w] and pygame.key.get_pressed()[pygame.K_a]:
                     vy = -3
                     vx = -3
-                    const.screen.blit(_images_character[1], player.get_cords)
-                    last_pic = 1
+                    walking = True
+                    const.screen.blit(const.character_walk_front[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_w] and pygame.key.get_pressed()[pygame.K_d]:
                     vy = -3
                     vx = 3
-                    const.screen.blit(_images_character[1], player.get_cords)
-                    last_pic = 1
+                    walking = True
+                    const.screen.blit(const.character_walk_front[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_a]:
                     vy = 3
                     vx = -3
-                    const.screen.blit(_images_character[0], player.get_cords)
-                    last_pic = 0
+                    walking = True
+                    const.screen.blit(const.character_walk_back[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_s] and pygame.key.get_pressed()[pygame.K_d]:
                     vy = 3
                     vx = 3
-                    const.screen.blit(_images_character[0], player.get_cords)
-                    last_pic = 0
+                    walking = True
+                    const.screen.blit(const.character_walk_back[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_w]:
                     vy = -4
-                    const.screen.blit(_images_character[1], player.get_cords)
-                    last_pic = 1
+                    walking = True
+                    const.screen.blit(const.character_walk_front[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_s]:
                     vy = 4
-                    const.screen.blit(_images_character[0], player.get_cords)
-                    last_pic = 0
+                    walking = True
+                    const.screen.blit(const.character_walk_back[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_a]:
                     vx = -4
-                    const.screen.blit(_images_character[2], player.get_cords)
-                    last_pic = 2
+                    walking = True
+                    const.screen.blit(const.character_walk_left[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 elif pygame.key.get_pressed()[pygame.K_d]:
                     vx = 4
-                    const.screen.blit(_images_character[3], player.get_cords)
-                    last_pic = 3
+                    walking = True
+                    const.screen.blit(const.character_walk_right[choose_number_of_picture(walking)],
+                                      player.get_cords)
                 else:
-                    const.screen.blit(_images_character[last_pic], player.get_cords)
+                    walking = False
+                    const.screen.blit(const.character_stay, player.get_cords)
                 death_z = False
                 for zombie in zombie_list:
                     const.screen.blit(_image_zombie, zombie.get_cords)
@@ -88,6 +107,8 @@ def start_game():
                 zombie_go = not zombie_go
                 border.all_sprites.draw(const.screen)
                 player.update(vx, vy)
+                models._timer(time)
+                # swat.update()
                 if zombie_go:
                     for zombie in zombie_list:
                         zombie.update()
