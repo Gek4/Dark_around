@@ -20,14 +20,28 @@ def start():
         ((410, 10), (410, 340)),
     ]
     coord_to_zombie = [
-        (1400, 900)
+        (1450, 520),
+        (420, 520),
+        (425, 730),
+        (1450, 730),
+        (425, 310),
+        (1450, 310),
+        (760, 795),
+        (920, 795),
+        (1080, 795),
+        (760, 200),
+        (920, 200),
+        (1080, 200)
 
     ]
     border = Border_constructor(data)
     player = Player(border, 1700, 880)
-    swat = Swat(border.horizontal_borders, border.vertical_borders, border.all_sprites, player, 150, 960,
-                [(150, 960), (150, 600), (550, 600), (550, 130), (1350, 130), (1350, 930), (550, 930), (550, 650),
-                 (300, 650), (300, 960), (150, 960)])
+    swat = [Swat(border.horizontal_borders, border.vertical_borders, border.all_sprites, player, 1760, 50,
+                 [(1760, 50), (1760, 450), (1350, 450), (1350, 930), (550, 930), (550, 130), (1350, 130), (1350, 400),
+                  (1650, 400), (1650, 50)]),
+            Swat(border.horizontal_borders, border.vertical_borders, border.all_sprites, player, 150, 960,
+                 [(150, 960), (150, 600), (550, 600), (550, 130), (1350, 130), (1350, 930), (550, 930), (550, 650),
+                  (300, 650), (300, 960)])]
     zombie_list = []
     for i in range(len(coord_to_zombie)):
         zombie_list.append(Zombie(border.all_sprites, player, coord_to_zombie[i][0], coord_to_zombie[i][1]))

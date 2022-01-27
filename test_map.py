@@ -14,7 +14,7 @@ def start_game():
     pygame.init()
 
     # load level information
-    border, player, zombie_list, swat = second_level.start()  # border, player, zombie, swat
+    border, player, zombie_list, swat = first_level.start()  # border, player, zombie, swat
     _image_zombie = models.graphics_zombie()
 
     running = True
@@ -46,6 +46,10 @@ def start_game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     running = False
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    print(pos)
 
             t += const.clock.tick()
             if t >= 16:
