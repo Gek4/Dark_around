@@ -91,6 +91,7 @@ def start_game():
                 border.all_sprites.draw(const.screen)
                 player.update(vx, vy)
                 swat.update()
+                pygame.draw.rect(const.screen, (0, 0, 0), swat.get_vision.rect)
                 if zombie_go:
                     for zombie in zombie_list:
                         zombie.update()
