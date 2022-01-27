@@ -7,13 +7,14 @@ time = 0
 
 def start_game():
     import first_level
+    import second_level
     import const
     import models
     global time
     pygame.init()
 
     # load level information
-    border, player, zombie_list, swat = first_level.start()  # border, player, zombie
+    border, player, zombie_list, swat = second_level.start()  # border, player, zombie, swat
     _image_zombie = models.graphics_zombie()
 
     running = True
