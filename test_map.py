@@ -1,21 +1,23 @@
 import pygame
-import sys
-import first_level
-import second_level
-
 animation_count = 0
 animation_shot_count = 0
 time = 0
 
 
-def start_game(first_level):
+def start_game(num):
+    import first_level
+    import second_level
+    if num == 2:
+        level = second_level
+    else:
+        level = first_level
     import const
     import models
     global time
     pygame.init()
 
     # load level information
-    border, player, zombie_list, swat = first_level.start()  # border, player, zombie, swat
+    border, player, zombie_list, swat = level.start()  # border, player, zombie, swat
     _image_zombie = models.graphics_zombie()
     _image_swat = models.graphics_swat()
 
@@ -48,6 +50,7 @@ def start_game(first_level):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     running = False
+                    return False
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
@@ -130,4 +133,5 @@ def start_game(first_level):
         else:
             running = False
             pygame.display.flip()
-    start_game(second_level)
+            return False
+    return True

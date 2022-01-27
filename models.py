@@ -60,8 +60,6 @@ class Zombie(pygame.sprite.Sprite):
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
-        pygame.draw.circle(self.image, pygame.Color("green"),
-                           (radius, radius), radius)
         self.rect = pygame.Rect(x, y, 35, 65)
 
     def update(self):
@@ -120,8 +118,6 @@ class Swat(pygame.sprite.Sprite):
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
-        pygame.draw.circle(self.image, pygame.Color("blue"),
-                           (radius, radius), radius)
         self.rect = pygame.Rect(x, y, 50, 50)
 
     def update(self):
@@ -234,8 +230,6 @@ class Player(pygame.sprite.Sprite):
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius),
                                     pygame.SRCALPHA, 32)
-        pygame.draw.circle(self.image, pygame.Color("red"),
-                           (radius, radius), radius)
         self.rect = pygame.Rect(x, y, 32, 65)
 
     def update(self, vx, vy):
