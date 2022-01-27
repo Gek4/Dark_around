@@ -1,13 +1,13 @@
 import pygame
-
+import sys
+import first_level
+import second_level
 animation_count = 0
 animation_shot_count = 0
 time = 0
 
 
-def start_game():
-    import first_level
-    import second_level
+def start_game(first_level):
     import const
     import models
     global time
@@ -122,7 +122,11 @@ def start_game():
                 if len(death_per_tick) > 21:
                     death_per_tick = death_per_tick[-22:]
                 t = 0
-
+            if player.get_cords[0] < 0 or player.get_cords[1] < 0:
+                running = False
+                break
         else:
             running = False
             pygame.display.flip()
+    start_game(second_level)
+start_game(first_level)
