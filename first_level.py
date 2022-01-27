@@ -1,5 +1,5 @@
 from const import width, height
-from models import Border_constructor, Zombie, Player
+from models import Border_constructor, Zombie, Player, Swat
 
 
 def start():
@@ -27,7 +27,9 @@ def start():
     ]
     border = Border_constructor(data)
     player = Player(border, 1700, 880)
+    swat = Swat(border.horizontal_borders, border.vertical_borders, border.all_sprites, player, 1000, 500, [(1000, 340),
+        (1000, 500)])
     zombie_list = []
     for i in range(len(coord_to_zombie)):
         zombie_list.append(Zombie(border.all_sprites, player, coord_to_zombie[i][0], coord_to_zombie[i][1]))
-    return border, player, zombie_list
+    return border, player, zombie_list, swat

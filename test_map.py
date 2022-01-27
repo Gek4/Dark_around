@@ -12,9 +12,8 @@ def start_game():
     global time
     pygame.init()
 
-    # for i in range(2):
     # load level information
-    border, player, zombie_list = first_level.start()  # border, player, zombie
+    border, player, zombie_list, swat = first_level.start()  # border, player, zombie
     _image_zombie = models.graphics_zombie()
 
     running = True
@@ -35,7 +34,7 @@ def start_game():
         return animation_count
 
     while running:
-        if not all(death_per_tick) or len(death_per_tick) == 0:
+        if (not all(death_per_tick) or len(death_per_tick) == 0) and swat.alive:
             const.screen.blit(const.background, (0, 0))
             # screen.blit(_image_character, player.get_cords)
             # pygame.draw.rect(screen, (41, 41, 41), (20, 20, 1560, 860))
@@ -108,7 +107,8 @@ def start_game():
                 border.all_sprites.draw(const.screen)
                 player.update(vx, vy)
                 models._timer(time)
-                # swat.update()
+                swat.update()
+                pygame.draw.rect(const.screen, (0, 0, 0), swat.get_vision.rect)
                 if zombie_go:
                     for zombie in zombie_list:
                         zombie.update()
@@ -116,6 +116,7 @@ def start_game():
                 if len(death_per_tick) > 21:
                     death_per_tick = death_per_tick[-22:]
                 t = 0
+
         else:
             running = False
             pygame.display.flip()
