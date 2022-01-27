@@ -2,7 +2,6 @@ import sys
 from test_map import start_game
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from design_main_menu import Ui_MainWindow
-import first_level
 
 
 class Main_Menu(QMainWindow, Ui_MainWindow):
@@ -18,7 +17,8 @@ class Main_Menu(QMainWindow, Ui_MainWindow):
 
     def start_pygame(self):
         self.close()
-        start_game(first_level)
+        if start_game(1):
+            start_game(2)
 
 
 if __name__ == '__main__':
