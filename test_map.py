@@ -121,3 +121,4 @@ def start_game():
         else:
             running = False
             pygame.display.flip()
+start_game()
